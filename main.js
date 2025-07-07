@@ -66,6 +66,11 @@ function render(tray) {
     }),
     ...items,
     { type: "separator" },
+    { type: "separator" },
+    {
+      label: "Quit TrayOpen",
+      click: () => app.quit(),
+    },
   ]);
 
   tray.setContextMenu(contextMenu);
