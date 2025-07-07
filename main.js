@@ -29,12 +29,23 @@ function render(tray) {
     ? storedProjects
     : (typeof storedProjects === "string" ? JSON.parse(storedProjects) : []);
 
-  const items = projects.map((project) => {
-    return {
-      label: project.name,
-      click: () => spawnSync("code", [project.path], { stdio: "inherit" }),
-    };
-  });
+  const items = projects.map((project, idx) => ({
+    label: project.name,
+    submenu: [
+      {
+        label: 'Open in VS Code',
+        click: () => spawnSync('code', [project.path], { stdio: 'inherit' }),
+      },
+      {
+        label: 'Remove',
+        click: () => {
+          projects.splice(idx, 1);
+          store.set('projects', projects);
+          render(tray);
+        },
+      },
+    ],
+  }));
 
   const contextMenu = Menu.buildFromTemplate([
     new MenuItem({
