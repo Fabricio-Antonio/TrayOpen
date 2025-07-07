@@ -35,6 +35,15 @@
     "appId": "your.id",
     "mac": {
       "category": "your.app.category.type"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
