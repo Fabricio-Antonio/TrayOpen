@@ -2,6 +2,11 @@ const { resolve, basename } = require("path");
 const { app, Tray, Menu, MenuItem, dialog } = require("electron");
 const Store = require("electron-store");
 const { spawn, spawnSync } = require("child_process");
+const Sentry = require("@sentry/electron/main");
+
+Sentry.init({
+  dsn: "https://949124c69b4f1784d74250255500ae46@o4509625221251072.ingest.de.sentry.io/4509625303302224",
+});
 
 const schema = {
   projects: {
@@ -10,54 +15,55 @@ const schema = {
   },
 };
 
-if (app.dock) { // Only to macOS
+if (app.dock) {  // Only to macOS
   app.dock.hide(); // Hide icon of Dock
 }
 
 const store = new Store({ schema });
 
-app.on("ready", () => {
-  const isMac = process.platform === "darwin";
-  const iconFile = isMac ? "iconTemplate.png" : "icon.png";
-  const tray = new Tray(resolve(__dirname, "assets", iconFile));
-  const projects = store.get("projects", []);
+let tray = null;
+
+function render(tray) {
+  let storedProjects = store.get("projects");
+  let projects = Array.isArray(storedProjects)
+    ? storedProjects
+    : (typeof storedProjects === "string" ? JSON.parse(storedProjects) : []);
 
   const items = projects.map((project) => {
     return {
       label: project.name,
-      click: () => spawnSync("code", [project.path]),
+      click: () => spawnSync("code", [project.path], { stdio: "inherit" }),
     };
   });
 
   const contextMenu = Menu.buildFromTemplate([
-    ...items,
-    {
-      type: "separator",
-    },
-  ]);
-  
-  contextMenu.insert(0, new MenuItem(
-    {
+    new MenuItem({
       label: "Add new project...",
       click: () => {
         const [path] = dialog.showOpenDialogSync({
           properties: ["openDirectory"],
-        });
+        }) || [];
+        if (!path) return;
         const name = basename(path);
-        store.set("projects", [
+        projects = [
           ...projects,
-          {
-            path,
-            name,
-          },
-        ]);
-        const item = new MenuItem({ label: name, click: () => spawnSync("code", [path]) });
-        contextMenu.append(item)
-        tray.setContextMenu(contextMenu);
+          { path, name },
+        ];
+        store.set("projects", projects);
+        render(tray);
       },
-    }
-  ))
+    }),
+    ...items,
+    { type: "separator" },
+  ]);
 
-  tray.setToolTip("TrayOpen — status: on 🔥");
   tray.setContextMenu(contextMenu);
+  tray.setToolTip("TrayOpen — status: on 🔥");
+}
+
+app.on("ready", () => {
+  const isMac = process.platform === "darwin";
+  const iconFile = isMac ? "iconTemplate.png" : "icon.png";
+  tray = new Tray(resolve(__dirname, "assets", iconFile));
+  render(tray);
 });
