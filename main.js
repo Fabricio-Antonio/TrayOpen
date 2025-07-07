@@ -19,7 +19,7 @@ const store = new Store({ schema });
 app.on("ready", () => {
   const isMac = process.platform === "darwin";
   const iconFile = isMac ? "iconTemplate.png" : "icon.png";
-  const tray = new Tray(resolve(process.cwd(), "assets", iconFile));
+  const tray = new Tray(resolve(__dirname, "assets", iconFile));
   const projects = store.get("projects", []);
 
   const items = projects.map((project) => {
