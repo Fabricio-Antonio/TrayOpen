@@ -1,6 +1,6 @@
 {
   "name": "trayopen",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Minimalist desktop application that sits in the system tray and offers quick access to your recent projects. With just one click, the project is automatically opened in Visual Studio Code. Ideal for developers who want agility on a daily basis.",
   "main": "main.js",
   "type": "commonjs",
@@ -41,8 +41,8 @@
     },
      "linux": {
       "appId": "your.id",
-       "target": ["AppImage", "deb"],
-       "category": "Utility"
+      "target": ["AppImage", "deb", "rpm"],
+      "category": "Utility"
     },
     "nsis": {
       "oneClick": false,
