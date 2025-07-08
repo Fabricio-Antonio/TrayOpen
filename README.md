@@ -8,7 +8,7 @@
 <br/>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/conclude-green" />
+  <img src="https://img.shields.io/badge/projecti--in--progess-yellow" />
   <img src="https://img.shields.io/badge/made%20with-Electron--JS-darkblue" />
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" />
   <br/>
