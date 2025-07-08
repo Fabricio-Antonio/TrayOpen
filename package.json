@@ -39,8 +39,10 @@
     "win": {
       "target": "nsis"
     },
-    "linux": {
-      "target": ["deb"]
+     "linux": {
+       "target": ["AppImage", "deb"],
+       "icon": "assets/icon.png",
+       "category": "Utility"
     },
     "nsis": {
       "oneClick": false,
