@@ -1,6 +1,6 @@
 {
   "name": "trayopen",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Minimalist desktop application that sits in the system tray and offers quick access to your recent projects. With just one click, the project is automatically opened in Visual Studio Code. Ideal for developers who want agility on a daily basis.",
   "main": "main.js",
   "type": "commonjs",
@@ -39,10 +39,31 @@
     "win": {
       "target": "nsis"
     },
-     "linux": {
-      "appId": "your.id",
-      "target": ["AppImage", "deb", "rpm"],
+    "linux": {
+      "appId": "com.fabriciosantos.trayopen",
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "snap",
+        "flatpak",
+        "pacman"
+      ],
+      "icon": "assets/icon.png",
       "category": "Utility"
+    },
+    "flatpak": {
+      "runtime": "org.freedesktop.Platform",
+      "runtimeVersion": "22.08",
+      "sdk": "org.freedesktop.Sdk",
+      "base": "org.electronjs.Electron2.BaseApp",
+      "baseVersion": "22.08",
+      "branch": "stable",
+      "finishArgs": [
+        "--share=network",
+        "--socket=x11",
+        "--device=dri"
+      ]
     },
     "nsis": {
       "oneClick": false,
