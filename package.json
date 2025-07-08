@@ -39,6 +39,9 @@
     "win": {
       "target": "nsis"
     },
+    "linux": {
+      "target": ["deb"]
+    },
     "nsis": {
       "oneClick": false,
       "perMachine": true,
