@@ -23,6 +23,15 @@ const store = new Store({ schema });
 
 let tray = null;
 
+function isVSCodeAvailable() {
+  try {
+    spawnSync('code', ['--version'], { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function render(tray) {
   let storedProjects = store.get("projects");
   let projects = Array.isArray(storedProjects)
@@ -30,11 +39,20 @@ function render(tray) {
     : (typeof storedProjects === "string" ? JSON.parse(storedProjects) : []);
 
   const items = projects.map((project, idx) => ({
-    label: project.name,
+      label: project.name,
     submenu: [
       {
         label: 'Open in VS Code',
-        click: () => spawnSync('code', [project.path], { stdio: 'inherit' }),
+        click: () => {
+          if (isVSCodeAvailable()) {
+            spawnSync('code', [project.path], { stdio: 'inherit' });
+          } else {
+            dialog.showErrorBox(
+              'VS Code command not found',
+              'The "code" command is not available in your PATH. To enable it, open VS Code, press Ctrl+Shift+P and run: Shell Command: Install \'code\' command in PATH.'
+            );
+          }
+        },
       },
       {
         label: 'Remove',
@@ -78,6 +96,9 @@ function render(tray) {
 }
 
 app.on("ready", () => {
+  if (process.platform === 'win32' || process.platform === 'darwin') {
+    app.setLoginItemSettings({ openAtLogin: true });
+  }
   const isMac = process.platform === "darwin";
   const iconFile = isMac ? "iconTemplate.png" : "icon.png";
   tray = new Tray(resolve(__dirname, "assets", iconFile));
