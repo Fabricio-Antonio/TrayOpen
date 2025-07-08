@@ -40,8 +40,8 @@
       "target": "nsis"
     },
      "linux": {
+      "appId": "your.id",
        "target": ["AppImage", "deb"],
-       "icon": "assets/icon.png",
        "category": "Utility"
     },
     "nsis": {
