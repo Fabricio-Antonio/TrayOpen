@@ -138,7 +138,7 @@ TrayOpen/
 
 ## 📜 License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+[MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ### 🤝 Want to contribute?
 This project is open to contributions! Feel free to fork, open an issue, or submit a PR.
