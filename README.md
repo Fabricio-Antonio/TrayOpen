@@ -3,7 +3,7 @@
 
 # TrayOpen
 
-<img src="https://github.com/user-attachments/assets/eabb5f3d-004e-4a95-9718-517421ae0a3c" width="120" />
+<img src="https://github.com/user-attachments/assets/fae2d448-fbb3-4fb5-adab-640a53f9ddb9" width="120" />
 </div>
 <br/>
 
