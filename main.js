@@ -19,6 +19,16 @@ if (app.dock) {  // Only to macOS
   app.dock.hide(); // Hide icon of Dock
 }
 
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  dialog.showErrorBox('TrayOpen is already running', 'TrayOpen is already running.');
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    dialog.showErrorBox('TrayOpen is already running', 'TrayOpen is already running.');
+  });
+}
+
 const store = new Store({ schema });
 
 let tray = null;
