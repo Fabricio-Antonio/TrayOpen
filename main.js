@@ -86,6 +86,14 @@ function render(tray) {
           properties: ["openDirectory"],
         }) || [];
         if (!path) return;
+        if (projects.some(p => p.path === path)) {
+          dialog.showMessageBox({
+            type: 'info',
+            title: 'Project already added',
+            message: 'This project is already in your list.'
+          });
+          return;
+        }
         const name = basename(path);
         projects = [
           ...projects,
