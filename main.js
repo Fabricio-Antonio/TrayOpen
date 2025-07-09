@@ -25,8 +25,18 @@ let tray = null;
 
 function isVSCodeAvailable() {
   try {
-    spawnSync('code', ['--version'], { stdio: 'ignore' });
-    return true;
+    if (process.platform === 'win32') {
+      const result = spawnSync('where', ['code'], {
+        encoding: 'utf8',
+        shell: true,
+      });
+      return result.status === 0;
+    } else {
+      const result = spawnSync('which', ['code'], {
+        encoding: 'utf8',
+      });
+      return result.status === 0;
+    }
   } catch {
     return false;
   }
@@ -45,7 +55,10 @@ function render(tray) {
         label: 'Open in VS Code',
         click: () => {
           if (isVSCodeAvailable()) {
-            spawnSync('code', [project.path], { stdio: 'inherit' });
+            spawnSync('code', [project.path], {
+              stdio: 'inherit',
+              shell: true,
+            });
           } else {
             dialog.showErrorBox(
               'VS Code command not found',
