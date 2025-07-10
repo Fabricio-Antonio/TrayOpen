@@ -18,63 +18,91 @@
 
 
 
-## Description
-TrayOpen is a minimalist desktop app built with ElectronJS. I created this project to explore desktop application development and integrate observability tools like Sentry.
-
+## 📝 Description
+TrayOpen is a minimalist desktop app built with ElectronJS, originally created as a playground to explore desktop development and experiment with observability tools like Sentry.
+What began as a simple study project quickly evolved into a powerful productivity booster for developers — a lightweight yet effective tool designed to streamline daily workflows and reduce context-switching.
 
 ## 🎯 Project Objective
 
-TrayOpen is a minimalist desktop application built with ElectronJS that runs in the system tray and provides instant access to your recent projects. With a single click, you can open any project directly in Visual Studio Code. It's designed for developers who value speed, simplicity, and productivity in their daily workflow.
+TrayOpen is a minimalist desktop application built with ElectronJS that runs in the system tray and provides instant access to your recent projects. With a single click, you can open any project directly in your IDE. It's designed for developers who value speed, simplicity, and productivity in their daily workflow.
 
-### 🚀 Key Features
-1. System Tray Interface
-- Runs discreetly in the system tray.
+## 🚀 How could TrayOpen improve my productivity as a dev?
 
-- Adaptive icon depending on the operating system: iconTemplate.png for macOS, icon.png for others.
-<br/>
+- **Instant project access:** Open any project in your preferred IDE with just two clicks, eliminating the need to browse folders or type commands.
+- **Centralized project management:** Keep all your active and favorite projects organized and accessible from the system tray.
+- **Multi-IDE support:** Easily switch between different IDEs (VS Code, IntelliJ, PyCharm, etc.) per project, adapting to polyglot and multi-stack workflows.
+- **Cross-platform convenience:** Works seamlessly on Windows, macOS, and Linux, so your workflow stays consistent across environments.
+- **No more clutter:** Keeps your desktop and taskbar clean by running in the system tray, always ready but never in the way.
+- **Quick context switching:** Instantly jump between projects without losing focus or wasting time searching for directories.
+- **Single instance enforcement:** Prevents accidental duplicate launches, reducing confusion and resource waste.
+- **Persistent project list:** Your projects are always remembered, even after rebooting or updating the app.
 
-2. Project Management
-- Add Projects: "Add new project..." option lets you select folders through a file dialog.
+## 📦 Installation
 
-- Project Listing: displays all saved projects using the folder name as the label.
-
-- Remove Projects: each listed project has a "Remove" option to delete it from storage.
-<br/>
-
-3. Quick Launch in Visual Studio Code
-- Each project has a submenu option "Open in VS Code".
-
-- Runs code [project-path] to open the folder directly in the editor.
-
-- Seamless native integration with Visual Studio Code.
-<br/>
-
-4. Data Persistence
-- Uses electron-store for local storage of project data.
-
-- Data persists between sessions and is validated with a schema to ensure consistency.
-<br/>
-
-5. Auto Startup
-- Configured to launch automatically with the operating system (Windows and macOS).
-
-- Leverages the openAtLogin feature to stay available at system startup.
-<br/>
-
-6. Cross-Platform Compatibility
-- Fully compatible with Windows, macOS, and Linux.
-
-- Automatically adjusts icons and behaviors to match each OS.
-
-- On macOS, the Dock icon is hidden for a cleaner interface.
-<br/>
-
-7. Monitoring & Stability
-- Integrated with Sentry for real-time error tracking and crash reporting.
-
-- Implements robust data validation (e.g., JSON structure, array types) to ensure stability.
+### Download
+Download the latest release for your platform:
+- **Windows**: `.exe` installer
+- **macOS**: `.dmg` or `.pkg`
+- **Linux**: `.AppImage`, `.deb`, `.rpm`, `.snap`, `.flatpak`, or `.pacman`
 
 
+## 🧰 Usage
+
+1. **Add a Project**
+   - Right-click the tray icon
+   - Select "Add new project..."
+   - Choose your project folder
+   - Select your preferred IDE
+
+2. **Open a Project**
+   - Right-click the tray icon
+   - Select your project
+   - Click "Open in IDE"
+
+3. **Configure IDE**
+   - Right-click the tray icon
+   - Select your project
+   - Click "Configure IDE"
+   - Choose a different IDE
+
+4. **Remove a Project**
+   - Right-click the tray icon
+   - Select your project
+   - Click "Remove"
+
+## 🛠️ Supported IDEs
+
+The application automatically detects and supports the following IDEs:
+
+### Code Editors
+- **Visual Studio Code** (`code`)
+- **Sublime Text** (`subl`)
+- **Atom** (`atom`)
+- **Brackets** (`brackets`)
+
+### Java IDEs
+- **IntelliJ IDEA** (`idea`)
+- **Eclipse** (`eclipse`)
+- **NetBeans** (`netbeans`)
+
+### Microsoft IDEs
+- **Visual Studio** (`devenv`) - Windows only
+- **Xcode** (`xcode-select`) - macOS only
+
+### Web Development
+- **WebStorm** (`webstorm`)
+- **CodeSandbox** (`codesandbox`)
+
+### Mobile Development
+- **Android Studio** (`studio64`/`studio`)
+- **FlutterFlow** (`flutterflow`)
+
+### Python/Data Science
+- **PyCharm** (`pycharm`)
+- **JupyterLab** (`jupyter lab`)
+
+### Terminal Editors
+- **Neovim** (`nvim`)
 
 ## 👨‍💻 Technologies Used
 
@@ -121,25 +149,77 @@ yarn start
 ## 📁 Project Structure
 ```
 TrayOpen/
-├── main.js              # Main file of app
-├── package.json         # Configs and dependencies
-├── assets/              # Icons of app
-│   ├── icon.png         # Icons for Windows/Linux
-│   └── iconTemplate.png # Icons for MacOS
-├── dist/                # Builds of app
-└── node_modules/        # Dependencies
+├── src/
+│   ├── main.js              # Application entry point
+│   ├── app.js               # Main application logic
+│   ├── ide-detector.js      # IDE detection module
+│   ├── config/
+│   │   └── app-config.js    # Application configuration
+│   ├── constants/
+│   │   └── ide-commands.js  # IDE command mappings
+│   ├── types/
+│   │   └── project.js       # Project validation
+│   └── utils/
+│       ├── project-manager.js
+│       ├── dialog-helper.js
+│       └── logger.js
+├── assets/                  # Application icons
+├── dist/                    # Build outputs
+└── package.json
 ```
 
-## 👥 Stay in touch
+## 📝 Changelog
 
-- Author - [Fabrício Santos](https://www.linkedin.com/in/fabricio-ss/)
-- Website - [www.fabriciosantos.dev.br](https://www.fabriciosantos.dev.br)
-- Youtube - [@DevFabricioSantos](https://www.youtube.com/@DevFabricioSantos)
+### v1.4.0 - LATEST
+
+- Major refactor: complete modularization of the codebase
+- New project structure with clear separation of concerns (`src/config`, `src/constants`,` src/types`, `src/utils`)
+- Centralized configuration and schema management
+- Improved project validation and error handling
+- Added robust logging with Sentry integration
+- Enhanced IDE detection logic (now supports 15+ IDEs)
+- Dialogs and user interactions are now handled by dedicated helper modules
+- Updated build scripts for easier cross-platform packaging
+- Improved maintainability, scalability, and code readability
+
+### v1.3.0
+- Added comprehensive Linux distribution support with multiple installer formats
+- Improved cross-distribution support for Linux
+- Enhanced IDE detection and configuration
+- Better error handling and logging
+- Modular code architecture
+
+### v1.2.0
+- Added RPM installer for Fedora/openSUSE users
+- Improved cross-distribution support for Linux
+
+### v1.1.0
+- Added support for .deb installer (easy installation for Ubuntu/Debian users)
+- Implemented a check for the VS Code `code` command before opening projects
+- Improved user experience and error handling on Linux and Windows
+
+### v1.0.0
+- Initial release
+- Basic project management
+- VS Code integration
+- System tray functionality
 
 ## 📜 License
 
 [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ### 🤝 Want to contribute?
-This project is open to contributions! Feel free to fork, open an issue, or submit a PR.
+This project is open to contributions! Feel free to:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 👥 Stay in touch
+
+- Author - [Fabrício Santos](https://www.linkedin.com/in/fabricio-ss/)
+- Website - [www.fabriciosantos.dev.br](https://www.fabriciosantos.dev.br)
+- Youtube - [@DevFabricioSantos](https://www.youtube.com/@DevFabricioSantos)
 
