@@ -86,6 +86,12 @@ class TrayOpenApp {
   
   addNewProject() {
     try {
+      const projects = this.projectManager.getProjects();
+      if (projects.length >= config.maxProjects) {
+        DialogHelper.showMaxProjectsLimitDialog();
+        return;
+      }
+      
       const path = DialogHelper.showOpenDirectoryDialog();
       if (!path) return;
       

@@ -1,5 +1,6 @@
 const { dialog } = require("electron");
 const Logger = require("./logger");
+const config = require("../config/app-config");
 
 class DialogHelper {
   static showErrorBox(title, message) {
@@ -107,6 +108,13 @@ class DialogHelper {
     return this.showErrorBox(
       'IDE not found',
       `The IDE command "${ideCommand}" was not found. Please check if the IDE is installed and available in your PATH.`
+    );
+  }
+  
+  static showMaxProjectsLimitDialog() {
+    return this.showWarningBox(
+      'Maximum Projects Reached',
+      `You have reached the maximum limit of ${config.maxProjects} projects. Please remove a project before adding a new one.`
     );
   }
 }

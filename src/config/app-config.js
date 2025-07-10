@@ -11,6 +11,7 @@ module.exports = {
   sentry: {
     dsn: "https://949124c69b4f1784d74250255500ae46@o4509625221251072.ingest.de.sentry.io/4509625303302224"
   },
+  maxProjects: 10,
   schema: {
     projects: {
       type: "array",

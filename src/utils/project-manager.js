@@ -43,6 +43,10 @@ class ProjectManager {
         throw new Error('Project already exists');
       }
       
+      if (projects.length >= config.maxProjects) {
+        throw new Error(`Maximum number of projects (${config.maxProjects}) reached. Please remove a project before adding a new one.`);
+      }
+      
       projects.push(project);
       this.store.set("projects", projects);
       
