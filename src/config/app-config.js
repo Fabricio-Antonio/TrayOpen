@@ -1,7 +1,7 @@
 module.exports = {
   appName: 'TrayOpen',
   appId: 'com.fabriciosantos.trayopen',
-  version: '1.3.0',
+  version: '1.4.0',
   description: 'Minimalist desktop application that sits in the system tray and offers quick access to your recent projects.',
   author: {
     name: 'Fabrício Santos',
