@@ -9,6 +9,8 @@
     "start": "electron .",
     "app:dir": "electron-builder --dir",
     "app:dist": "electron-builder",
+    "app:dist:win": "electron-builder --win",
+    "build:all": "npm run app:dist && npm run app:dist:win",
     "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [],
