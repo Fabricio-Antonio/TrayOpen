@@ -2,7 +2,7 @@
   "name": "trayopen",
   "version": "1.3.0",
   "description": "Minimalist desktop application that sits in the system tray and offers quick access to your recent projects. With just one click, the project is automatically opened in Visual Studio Code. Ideal for developers who want agility on a daily basis.",
-  "main": "main.js",
+  "main": "src/main.js",
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
