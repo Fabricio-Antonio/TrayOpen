@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>All JSON notes</title>
+  <style>
+    body { background: #23272e; color: #fff; font-family: Arial,sans-serif; margin:0; padding:0; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    h2 { margin-top: 0; }
+    .note-list { max-height: 60vh; overflow-y: auto; margin-top: 16px; }
+    .note-item { background: #2c313a; margin-bottom: 10px; border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; }
+    .note-name { font-size: 1em; }
+    .note-actions { display: flex; gap: 8px; }
+    .btn { background: #444b5a; color: #fff; border: none; border-radius: 4px; padding: 3px 10px; cursor: pointer; font-size: 0.95em; transition: background 0.2s; }
+    .btn:hover { background: #5a6274; }
+    .close-btn { float: right; background: #e74c3c; margin-bottom: 16px; }
+    .close-btn:hover { background: #c0392b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="project-title">JSON Notes</h2>
+    <div class="note-list" id="note-list"></div>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.on('all-json-notes-data', (event, { projectName, notes }) => {
+      document.getElementById('project-title').textContent = `JSON Notes — ${projectName}`;
+      const list = document.getElementById('note-list');
+      list.innerHTML = '';
+      if (!notes.length) {
+        list.innerHTML = '<div style="color:#aaa">No note found.</div>';
+        return;
+      }
+      notes.forEach(note => {
+        const div = document.createElement('div');
+        div.className = 'note-item';
+        div.innerHTML = `
+          <span class="note-name">${note.name}</span>
+          <span class="note-actions">
+            <button class="btn" onclick="ipcRenderer.send('open-json-note', '${note.path}')">Open</button>
+            <button class="btn" onclick="ipcRenderer.send('delete-json-note', { path: '${note.path}', name: '${note.name}' })">Delete</button>
+          </span>
+        `;
+        list.appendChild(div);
+      });
+    });
+    ipcRenderer.send('request-all-json-notes');
+  </script>
+</body>
+</html> 

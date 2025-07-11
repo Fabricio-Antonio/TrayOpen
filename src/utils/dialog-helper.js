@@ -117,6 +117,28 @@ class DialogHelper {
       `You have reached the maximum limit of ${config.maxProjects} projects. Please remove a project before adding a new one.`
     );
   }
+  
+  static showDeleteNoteConfirmationDialog(noteName) {
+    return this.showQuestionBox(
+      'Delete Note',
+      `Are you sure you want to delete "${noteName}"? This action cannot be undone.`,
+      ['Delete', 'Cancel']
+    );
+  }
+  
+  static showNoteCreatedDialog(projectName) {
+    return this.showInfoBox(
+      'Note Created',
+      `New JSON note created for project "${projectName}". The note has been opened in your default editor.`
+    );
+  }
+  
+  static showNoteDeletedDialog(noteName) {
+    return this.showInfoBox(
+      'Note Deleted',
+      `Note "${noteName}" has been deleted successfully.`
+    );
+  }
 }
 
 module.exports = DialogHelper; 

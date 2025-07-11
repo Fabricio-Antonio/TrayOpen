@@ -1,6 +1,6 @@
 {
   "name": "trayopen",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Minimalist desktop application that sits in the system tray and offers quick access to your recent projects. With just one click, the project is automatically opened in Visual Studio Code. Ideal for developers who want agility on a daily basis.",
   "main": "src/main.js",
   "type": "commonjs",
@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "@sentry/electron": "^6.8.0",
+    "electron": "^29.0.0",
     "electron-store": "^8.2.0"
   },
   "devDependencies": {

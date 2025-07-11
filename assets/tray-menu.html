@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>TrayOpen Menu</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #23272e;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+    .project {
+      background: #2c313a;
+      margin: 8px 16px;
+      border-radius: 6px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px #0002;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .project:hover {
+      background: #3a3f4b;
+    }
+    .project-title {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 4px;
+    }
+    .actions {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      background: #444b5a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 10px;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background 0.2s;
+    }
+    .action-btn:hover {
+      background: #5a6274;
+    }
+    .json-notes {
+      margin-top: 8px;
+      font-size: 0.95em;
+      color: #b0b8c7;
+    }
+    .json-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .json-note-btn {
+      background: #444b5a;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 1px 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background 0.2s;
+    }
+    .json-note-btn:hover {
+      background: #5a6274;
+    }
+    .add-btn {
+      background: #2ecc40;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 16px;
+      margin: 10px 16px 0 16px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .add-btn:hover {
+      background: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <button class="add-btn" onclick="window.electronAPI.addProject()">Add a new project...</button>
+  <div class="container" id="projects-list">
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    function renderProjects(projects) {
+      const list = document.getElementById('projects-list');
+      list.innerHTML = '';
+      projects.forEach((project, idx) => {
+        const div = document.createElement('div');
+        div.className = 'project';
+        div.innerHTML = `
+          <div class="project-title">${project.name}</div>
+          <div class="actions">
+            <button class="action-btn" onclick="window.electronAPI.openInIDE(${idx})">Open IDE</button>
+            <button class="action-btn" onclick="window.electronAPI.configureIDE(${idx})">Settings IDE</button>
+            <button class="action-btn" onclick="window.electronAPI.removeProject(${idx})">Remove</button>
+            <button class="action-btn" onclick="window.electronAPI.newJsonNote(${idx})">New JSON notes</button>
+          </div>
+          <div class="json-notes">
+            ${project.jsonNotes.map(note => `
+              <div class="json-note">
+                <span>${note.name}</span>
+                <button class="json-note-btn" onclick="window.electronAPI.openJsonNote('${note.path}')">Open</button>
+                <button class="json-note-btn" onclick="window.electronAPI.deleteJsonNote('${note.path}', '${note.name}')">Delete</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    ipcRenderer.on('projects-data', (event, projects) => {
+      renderProjects(projects);
+    });
+
+    ipcRenderer.send('get-projects');
+  </script>
+</body>
+</html> 
