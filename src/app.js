@@ -17,6 +17,7 @@ class TrayOpenApp {
     this.projectManager = new ProjectManager();
     this.jsonNotesManager = new JSONNotesManager();
     this.tray = null;
+    this.openWindows = new Set(); 
     this.initializeSentry();
     this.setupAppEvents();
   }
@@ -35,6 +36,11 @@ class TrayOpenApp {
     
     app.on("before-quit", () => {
       this.cleanup();
+    });
+    
+    app.on('window-all-closed', (event) => {
+      event.preventDefault();
+      Logger.info('All windows closed, but keeping app running in tray');
     });
     
     const gotTheLock = app.requestSingleInstanceLock();
@@ -512,32 +518,56 @@ class TrayOpenApp {
       frame: true,
       resizable: true,
       alwaysOnTop: true,
+      parent: null,
+      modal: false,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
       },
     });
+    
+    this.openWindows.add(win);
+    
+    win.setMenu(null);
+    
     win.loadFile(path.join(__dirname, '../assets/all-json-notes.html'));
+    
     ipcMain.once('request-all-json-notes', (event) => {
       event.sender.send('all-json-notes-data', {
         projectName,
         notes: allNotes,
       });
     });
-    ipcMain.on('open-json-note', (event, filePath) => {
+    
+    const openNoteListener = (event, filePath) => {
       const projects = this.projectManager.getProjects();
       const project = projects.find(p => p.name === projectName);
       if (project) {
         this.jsonNotesManager.openNoteInIDE(filePath, project.ideCommand);
       }
-    });
-    ipcMain.on('delete-json-note', (event, { path: filePath, name }) => {
+    };
+    
+    const deleteNoteListener = (event, { path: filePath, name }) => {
       this.deleteJSONNote(filePath, name);
       const updatedNotes = this.jsonNotesManager.listProjectNotes(projectName);
       event.sender.send('all-json-notes-data', {
         projectName,
         notes: updatedNotes,
       });
+    };
+    
+    ipcMain.on('open-json-note', openNoteListener);
+    ipcMain.on('delete-json-note', deleteNoteListener);
+    
+    win.on('closed', () => {
+      Logger.info('All JSON notes window closed', { projectName });
+      this.openWindows.delete(win);
+      ipcMain.removeListener('open-json-note', openNoteListener);
+      ipcMain.removeListener('delete-json-note', deleteNoteListener);
+    });
+    
+    win.on('close', (event) => {
+      Logger.info('All JSON notes window closing', { projectName });
     });
   }
 }
