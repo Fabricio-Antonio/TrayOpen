@@ -36,6 +36,7 @@ TrayOpen is a minimalist desktop application built with ElectronJS that runs in 
 - **Quick context switching:** Instantly jump between projects without losing focus or wasting time searching for directories.
 - **Single instance enforcement:** Prevents accidental duplicate launches, reducing confusion and resource waste.
 - **Persistent project list:** Your projects are always remembered, even after rebooting or updating the app.
+- **JSON Notes system:** Instantly create and open structured notes per project, auto-organized and moved to scratch folders when filled, with real-time file watching, IDE integration, and centralized viewing — perfect for jotting down bugs, ideas, configs, and API mockups without interrupting your flow.
 
 ## 📦 Installation
 
@@ -69,6 +70,20 @@ Download the latest release for your platform:
    - Right-click the tray icon
    - Select your project
    - Click "Remove"
+
+5. **Create a JSON Note**
+    - Right-click the tray icon
+    - Select your project
+    - Click "New JSON Note"
+    - A note is created and opened in your IDE
+    - If you write content, it will be auto-moved to the scratch directory
+
+6. **View All Notes**
+    - Right-click the tray icon
+    - Select your project
+    - Click "View all notes..."
+    - Browse, search, and open all JSON notes for that project
+
 
 ## 🛠️ Supported IDEs
 
@@ -170,7 +185,24 @@ TrayOpen/
 
 ## 📝 Changelog
 
-### v1.4.0 - LATEST
+### v1.5.0 - LATEST
+- New JSON Notes System: Complete integration of JSON note creation and management directly from the tray menu
+- Smart File Management: Automatic file watching and movement of JSON notes from project directories to scratch directories when they contain content
+- Enhanced IDE Integration: JSON notes can be opened directly in configured IDEs with automatic IDE detection and configuration
+- Dedicated Notes Window: New "View all notes..." feature with a dedicated window to browse and manage all JSON notes for each project
+- Advanced File Operations: Support for creating, opening, and deleting JSON notes with proper file path normalization and error handling
+- Scratch Directory System: Intelligent organization of notes in user-specific scratch directories with project-based subdirectories
+- Real-time File Monitoring: File watchers that detect changes and automatically move completed notes to scratch directories
+- Improved Menu Structure: Reorganized tray menu with "More" submenu containing JSON functionality for better organization
+- Enhanced Error Handling: Comprehensive logging and error management for all JSON note operations with Sentry integration
+- Cross-platform File Support: Proper handling of file paths across Windows, and Linux with platform-specific considerations
+- Debounced File Processing: Smart debouncing system to prevent file conflicts and ensure stable file operations
+- Automatic IDE Opening: JSON notes are automatically opened in the configured IDE when created
+- Project-specific Note Management: Each project maintains its own collection of JSON notes with proper isolation
+- File Existence Validation: Robust checking for file existence in both project and scratch directories
+- User Confirmation Dialogs: Proper confirmation dialogs for note deletion with user-friendly messaging
+
+### v1.4.0
 
 - Major refactor: complete modularization of the codebase
 - New project structure with clear separation of concerns (`src/config`, `src/constants`,` src/types`, `src/utils`)
