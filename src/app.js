@@ -22,6 +22,22 @@ class TrayOpenApp {
     this.setupAppEvents();
   }
   
+  normalizeFilePath(filePath) {
+    try {
+      if (!filePath || typeof filePath !== 'string') {
+        Logger.warn('Invalid file path provided for normalization', { filePath });
+        return filePath;
+      }
+      
+      const normalized = path.normalize(filePath);
+      Logger.debug('File path normalized', { original: filePath, normalized });
+      return normalized;
+    } catch (error) {
+      Logger.error('Error normalizing file path', { filePath, error: error.message });
+      return filePath;
+    }
+  }
+  
   initializeSentry() {
     Sentry.init({
       dsn: config.sentry.dsn,
@@ -255,6 +271,9 @@ class TrayOpenApp {
   
   openJSONNote(filePath, projectIndex) {
     try {
+      const normalizedPath = this.normalizeFilePath(filePath);
+      Logger.info('Opening JSON note', { originalPath: filePath, normalizedPath, projectIndex });
+      
       const projects = this.projectManager.getProjects();
       const project = projects[projectIndex];
       
@@ -263,18 +282,18 @@ class TrayOpenApp {
         return;
       }
       
-      if (fs.existsSync(filePath)) {
-        this.jsonNotesManager.openNoteInIDE(filePath, project.ideCommand);
+      if (fs.existsSync(normalizedPath)) {
+        this.jsonNotesManager.openNoteInIDE(normalizedPath, project.ideCommand);
         return;
       }
       
-      const fileName = path.basename(filePath);
+      const fileName = path.basename(normalizedPath);
       const scratchDir = this.jsonNotesManager.getProjectScratchDir(project.name);
       const scratchFilePath = path.join(scratchDir, fileName);
       
       if (fs.existsSync(scratchFilePath)) {
         Logger.info('File found in scratch directory, opening from there', { 
-          originalPath: filePath, 
+          originalPath: normalizedPath, 
           scratchPath: scratchFilePath 
         });
         this.jsonNotesManager.openNoteInIDE(scratchFilePath, project.ideCommand);
@@ -282,7 +301,7 @@ class TrayOpenApp {
       }
       
       Logger.error('Note file not found in any location', { 
-        originalPath: filePath, 
+        originalPath: normalizedPath, 
         scratchPath: scratchFilePath 
       });
       DialogHelper.showErrorBox('Error', 'Note file not found. It may have been moved or deleted.');
@@ -296,35 +315,43 @@ class TrayOpenApp {
     try {
       Logger.info('Attempting to delete JSON note', { filePath, noteName });
       
+      const normalizedPath = this.normalizeFilePath(filePath);
+      
       const result = DialogHelper.showDeleteNoteConfirmationDialog(noteName);
       if (result === 0) { 
-        Logger.info('User confirmed deletion', { filePath, noteName });
+        Logger.info('User confirmed deletion', { filePath: normalizedPath, noteName });
         
-        if (fs.existsSync(filePath)) {
-          const success = this.jsonNotesManager.deleteNote(filePath);
+        if (fs.existsSync(normalizedPath)) {
+          const success = this.jsonNotesManager.deleteNote(normalizedPath);
           if (success) {
-            Logger.info('JSON note deleted successfully', { filePath, noteName });
+            Logger.info('JSON note deleted successfully', { filePath: normalizedPath, noteName });
             DialogHelper.showNoteDeletedDialog(noteName);
             this.render();
             return;
           } else {
-            Logger.error('Failed to delete JSON note', { filePath, noteName });
+            Logger.error('Failed to delete JSON note', { filePath: normalizedPath, noteName });
             DialogHelper.showErrorBox('Error', 'Failed to delete note. File may not exist or be inaccessible.');
             return;
           }
         }
         
-        const fileName = path.basename(filePath);
-        const projectIndex = this.findProjectIndexByFilePath(filePath);
+        const fileName = path.basename(normalizedPath);
+        const projectIndex = this.findProjectIndexByFilePath(normalizedPath);
         
         if (projectIndex !== -1) {
           const project = this.projectManager.getProjects()[projectIndex];
           const scratchDir = this.jsonNotesManager.getProjectScratchDir(project.name);
           const scratchFilePath = path.join(scratchDir, fileName);
           
+          Logger.info('Checking scratch directory for file', { 
+            originalPath: normalizedPath, 
+            scratchPath: scratchFilePath,
+            fileName 
+          });
+          
           if (fs.existsSync(scratchFilePath)) {
             Logger.info('File found in scratch directory, deleting from there', { 
-              originalPath: filePath, 
+              originalPath: normalizedPath, 
               scratchPath: scratchFilePath 
             });
             
@@ -342,10 +369,10 @@ class TrayOpenApp {
           }
         }
         
-        Logger.warn('File not found for deletion in any location', { filePath, noteName });
+        Logger.warn('File not found for deletion in any location', { filePath: normalizedPath, noteName });
         DialogHelper.showErrorBox('Error', 'Note file not found. It may have been already deleted or moved.');
       } else {
-        Logger.info('User cancelled deletion', { filePath, noteName });
+        Logger.info('User cancelled deletion', { filePath: normalizedPath, noteName });
       }
     } catch (error) {
       Logger.error('Error deleting JSON note', { 
@@ -360,8 +387,11 @@ class TrayOpenApp {
   
   findProjectIndexByFilePath(filePath) {
     try {
+      const normalizedPath = this.normalizeFilePath(filePath);
+      Logger.info('Finding project index by file path', { originalPath: filePath, normalizedPath });
+      
       const projects = this.projectManager.getProjects();
-      const fileName = path.basename(filePath);
+      const fileName = path.basename(normalizedPath);
       
       const match = fileName.match(/^trayopen-(\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})\.json$/);
       if (!match) {
@@ -371,11 +401,13 @@ class TrayOpenApp {
       
       for (let i = 0; i < projects.length; i++) {
         const project = projects[i];
-        if (filePath.startsWith(project.path) || filePath.includes(project.name)) {
+        if (normalizedPath.startsWith(project.path) || normalizedPath.includes(project.name)) {
+          Logger.info('Found project index', { projectIndex: i, projectName: project.name });
           return i;
         }
       }
       
+      Logger.warn('No project found for file path', { normalizedPath });
       return -1;
     } catch (error) {
       Logger.error('Error finding project index by file path', error);

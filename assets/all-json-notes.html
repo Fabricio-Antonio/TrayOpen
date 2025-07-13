@@ -24,6 +24,12 @@
   </div>
   <script>
     const { ipcRenderer } = require('electron');
+    
+    // Função para escapar caminhos de arquivo para uso seguro em HTML
+    function escapeFilePath(filePath) {
+      return filePath.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+    
     ipcRenderer.on('all-json-notes-data', (event, { projectName, notes }) => {
       document.getElementById('project-title').textContent = `JSON Notes — ${projectName}`;
       const list = document.getElementById('note-list');
@@ -35,11 +41,16 @@
       notes.forEach(note => {
         const div = document.createElement('div');
         div.className = 'note-item';
+        
+        // Escapar o caminho do arquivo para uso seguro em HTML
+        const escapedPath = escapeFilePath(note.path);
+        const escapedName = note.name.replace(/'/g, "\\'");
+        
         div.innerHTML = `
           <span class="note-name">${note.name}</span>
           <span class="note-actions">
-            <button class="btn" onclick="ipcRenderer.send('open-json-note', '${note.path}')">Open</button>
-            <button class="btn" onclick="ipcRenderer.send('delete-json-note', { path: '${note.path}', name: '${note.name}' })">Delete</button>
+            <button class="btn" onclick="ipcRenderer.send('open-json-note', '${escapedPath}')">Open</button>
+            <button class="btn" onclick="ipcRenderer.send('delete-json-note', { path: '${escapedPath}', name: '${escapedName}' })">Delete</button>
           </span>
         `;
         list.appendChild(div);

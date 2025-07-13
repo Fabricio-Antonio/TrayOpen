@@ -87,7 +87,6 @@ class JSONNotesManager {
       const files = fs.readdirSync(projectDir)
         .filter(file => file.startsWith('trayopen-') && file.endsWith('.json'))
         .sort((a, b) => {
-          // Ordenar por data e hora (mais recente primeiro)
           const dateTimeA = a.replace('trayopen-', '').replace('.json', '');
           const dateTimeB = b.replace('trayopen-', '').replace('.json', '');
           return new Date(dateTimeB.replace(/-/g, ':')) - new Date(dateTimeA.replace(/-/g, ':'));
@@ -216,30 +215,31 @@ class JSONNotesManager {
 
   deleteNote(filePath) {
     try {
-      Logger.info('Attempting to delete note', { filePath });
+      const normalizedPath = path.normalize(filePath);
+      Logger.info('Attempting to delete note', { originalPath: filePath, normalizedPath });
       
-      if (!fs.existsSync(filePath)) {
-        Logger.warn('File does not exist for deletion', { filePath });
+      if (!fs.existsSync(normalizedPath)) {
+        Logger.warn('File does not exist for deletion', { normalizedPath });
         return false;
       }
 
-      const stats = fs.statSync(filePath);
+      const stats = fs.statSync(normalizedPath);
       if (!stats.isFile()) {
-        Logger.warn('Path is not a file', { filePath, isDirectory: stats.isDirectory() });
+        Logger.warn('Path is not a file', { normalizedPath, isDirectory: stats.isDirectory() });
         return false;
       }
 
-      fs.unlinkSync(filePath);
+      fs.unlinkSync(normalizedPath);
       
-      if (fs.existsSync(filePath)) {
-        Logger.error('File still exists after deletion attempt', { filePath });
+      if (fs.existsSync(normalizedPath)) {
+        Logger.error('File still exists after deletion attempt', { normalizedPath });
         return false;
       }
       
-      this.processedFiles.delete(filePath);
-      this.processingFiles.delete(filePath);
+      this.processedFiles.delete(normalizedPath);
+      this.processingFiles.delete(normalizedPath);
       
-      Logger.info('Note deleted successfully', { filePath });
+      Logger.info('Note deleted successfully', { normalizedPath });
       return true;
     } catch (error) {
       Logger.error('Error deleting note', { 
