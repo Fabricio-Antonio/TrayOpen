@@ -177,8 +177,11 @@ TrayOpen/
 │   └── utils/
 │       ├── project-manager.js
 │       ├── dialog-helper.js
+│       ├── json-notes-manager.js
 │       └── logger.js
 ├── assets/                  # Application icons
+│   ├── all-json-notes.html
+│   ├── all-json-notes.html
 ├── dist/                    # Build outputs
 └── package.json
 ```
